@@ -1,0 +1,54 @@
+stp_config_path: /mnt/shared_data/users/shared/runs/stp_v0.1.4/config.yaml
+stp_checkpoint_path: /mnt/shared_data/users/shared/runs/stp_v0.1.4/checkpoint_1500000+ts.pth
+
+# stp_torchscript_path: /mnt/shared_data/users/artyom/projects/castle-ai-zero-shot-tts-service/models/stp_v4.pt
+
+flow_decoder_config_path: /mnt/shared_data/users/kajik/projects/castle-ai-speech-synthesis/refactored_logs/flow_decoder_v0.0.9/config.yaml
+flow_decoder_checkpoint_path: /mnt/shared_data/users/kajik/projects/castle-ai-speech-synthesis/refactored_logs/flow_decoder_v0.0.9/G_1000000+ts.pth
+
+
+autoencoder_config_path: /mnt/shared_data/users/kajik/projects/castle-ai-speech-synthesis/refactored_logs/autoencoder0.3.3/config.yaml
+autoencoder_checkpoint_path: /mnt/shared_data/users/kajik/projects/castle-ai-speech-synthesis/refactored_logs/autoencoder0.3.3/G_300000.pth
+
+enable_fp16: false
+device: "cuda"
+vocoder_path: /mnt/shared_data/users/mariam/ckpts/bigvgan_22khz_80band/zero-shot-models_vocoder_1_vocoder_model.pt
+inference_relpath: castle_flow/speech_token_predictor/inference.py
+language: "en"
+
+inference_hparams:
+  sample_version: "new"
+
+  n_steps: 16
+  alpha: 0.7
+  sigma: 1.0
+  
+  chunk_size: 3.
+  cut_random_chunk: false
+  cut_left_chunk: false
+  cut_right_chunk: true
+  
+  max_ar_steps: 1200
+  top_k: 10
+  temperature: 0.7
+  penalty: 1.5
+  top_p: 1.1
+  use_cache: true
+  min_prob_eos: 0.98
+
+  use_stp_prompt: true
+  use_flow_decoder_prompt: true
+
+dataset_name: librispeech_test_clean
+seed: 42
+
+save_features:
+  spectrogram: false
+  audio: true
+  prompt_audio_processed: true
+  prompt_audio_vocoded: true
+
+asr_model_id: openai/whisper-large-v3
+phonemizer_service_url: http://192.168.2.240:5013/api/v1/phonemize
+
+inference_type: "tts-autoregressive"

@@ -1,0 +1,8 @@
+scripted_models
+.idea
+.vscode
+experiments
+tmp_audios
+output.csv
+output_sample3.wav
+voices_prompts.csv

@@ -1,0 +1,99 @@
+total_step: 1000000
+seed: 1234
+cudnn_benchmark: true
+use_mixed_precision: true
+loss_weights: {}
+logger:
+  runs_dir: /mnt/shared_data/users/kajik/runs/flow_decoder
+  run_name: flow_decoder_vX.X.X # user_id, model_version, experiment_version
+  run_dir: ${logger.runs_dir}/${logger.run_name}
+  run_description: null
+  log_scalar_interval: 10
+  save_checkpoint_interval: 20000
+  checkpoint_pattern: checkpoint_*.pth
+  checkpoint_path: null
+  validation_interval: null
+data:
+  dataset_root: /mnt/datasets/castle-ai-data-storage
+  train_metadata_paths:
+  - data/train_new.txt
+  val_metadata_paths: null
+  source_sampling_rate: 44100
+  sampling_rate: 22050
+  hop_length: 256
+  filter_length: 1024
+  win_length: 1024
+  n_mels: 80
+  mel_fmin: 0.0
+  mel_fmax: 8000.0
+  downsample_factor: 4
+  mel_mean: -5.8843
+  mel_std: 2.2615
+  context_mask_drop_prob: 0.3
+  context_mask_min_ratio: 0.7
+  context_mask_max_ratio: 1.0
+  max_duration: 12.0
+  vsr_transform: true
+dataloader:
+  batch_size: 24
+  num_workers: 8
+  pin_memory: true
+  prefetch_factor: 2
+  shuffle: true
+  use_dynamic_batch_sampler: false
+  dynamic_batch_sampler:
+    max_batch_length: null
+    bucket_boundaries: null
+    bucket_lens: null
+    max_batch_ex: null
+    num_buckets: null
+    max_sample_length: null
+    batch_ordering: random
+  use_bucket_sampler: false
+  bucket_sampler:
+    boundaries: null
+model:
+  codebook_size: 8192
+  downsample_factor: ${data.downsample_factor}
+  n_mels: 80
+  use_classifier_free_guidance: true
+  conditional_dropout: 0.2
+  
+  decoder:
+    hidden_size: 1024
+    n_layers: 12
+    n_heads: 16
+    ffn_size: 4096
+    hidden_act: relu
+    hidden_dropout: 0.1
+    attention_dropout: 0.0
+    kernel_size: 1
+    attn_implementation: SDPA
+    mask_paddings_symmetrically: false
+    use_conv_pos_encoder: true
+    conv_pos_encoder:
+      depth: 2
+      width: 31
+      groups: 16
+    use_alibi: true
+    alibi:
+      alibi_scale: 1.0
+      use_learned_scale_per_head: true
+      use_zero_for_first_bias: true
+optimizer:
+  learning_rate: 0.0001
+  eps: 1.0e-07
+  clip_grad_norm: true
+  grad_max_norm: 0.2
+  warmup_step: 5000
+
+use_ddp: false
+ddp:
+  port: 8023
+  devices: null
+flow_matcher_sigma: 0.0
+flow_matcher_independent: false
+use_loss_masking: true
+
+autoencoder_config_path: /mnt/shared_data/users/kajik/runs/autoencoder/autoencoder_v1.0/config.yaml
+autoencoder_ckpt_path: /mnt/shared_data/users/kajik/runs/autoencoder/autoencoder_v1.0/checkpoint_300000.pth

@@ -1,0 +1,110 @@
+total_step: 2000000
+seed: 1234
+cudnn_benchmark: true
+use_mixed_precision: true
+grad_accumulation_steps: 1
+loss_weights: {}
+logger:
+  runs_dir: /home/podcastle/gevorg/castle-ai-speech-flow/runs/logs
+  run_name: stp_v0.2.1 # user_id, model_version, experiment_version
+  run_dir: ${logger.runs_dir}/${logger.run_name}
+  run_description: concat augmentation by same speaker audio, text pairs 
+  log_scalar_interval: 10
+  save_checkpoint_interval: 20000
+  checkpoint_pattern: checkpoint_*.pth
+  checkpoint_path: null
+  validation_interval: null
+data:
+  dataset_root: /mnt/storage_00/castle-ai-data-storage/datasets
+  train_metadata_paths:
+  - data/apple-books_train_truncated_with_lengths_and_speaker.txt
+  - data/audible-audiobooks_train_truncated_with_lengths_and_speaker.txt
+  - data/audiobooksnow_train_truncated_with_lengths_and_speaker.txt
+  - data/audiobookstore_train_truncated_with_lengths_and_speaker.txt
+  - data/digitalbooks_train_truncated_with_lengths_and_speaker.txt
+  - data/everand-podcasts_train_truncated_with_lengths_and_speaker.txt
+  - data/google-podcasts_train_truncated_with_lengths_and_speaker.txt
+  val_metadata_paths: null
+  vocab_path: /home/podcastle/gevorg/castle-ai-speech-synthesis/data/vocab.json
+  token_separator: null
+  add_blank: false
+  
+  source_sampling_rate: 44100
+  sampling_rate: 22050
+  hop_length: 256
+  filter_length: 1024
+  win_length: 1024
+  n_mels: 80
+  mel_fmin: 0.0
+  mel_fmax: 8000.0
+  downsample_factor: 4
+  mel_mean: -5.8843
+  mel_std: 2.2615
+  max_frames: 2600
+  
+  phoneme_postfix: ''
+  audio_dir: processed
+  phoneme_dir: phonemes
+  add_bos_token: true
+  add_eos_token: true
+
+  concat_prob: 0.0
+
+dataloader:
+  batch_size: 12
+  num_workers: 8
+  pin_memory: true
+  prefetch_factor: 2
+  shuffle: true
+  use_dynamic_batch_sampler: true
+  dynamic_batch_sampler:
+    max_batch_length: 18_000 # for dynamic batch
+    bucket_boundaries: [250, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1500, 1800, 2100, 2400, 2600]
+    bucket_lens: [107, 88, 67, 53, 44, 38, 33, 29, 27, 24, 22, 20, 18, 15, 13, 11, 10]
+    max_batch_ex: 512
+    num_buckets: null
+    max_sample_length: null
+    batch_ordering: random
+  use_bucket_sampler: false
+  bucket_sampler:
+    boundaries: null
+
+model:
+  vocab_size_text: 178
+  vocab_size_speech: 8195
+  speech_pad_token: 8194
+  
+  max_pos: 2048 # for learnable positional embeddings
+  
+  decoder:
+    hidden_size: 1024
+    n_layers: 24
+    n_heads: 16
+    ffn_size: 4096
+    hidden_dropout: 0.1
+    attention_dropout: 0.0
+    attn_implementation: BLOOM_FLASH_ATTENTION_2
+    use_rope: true
+    rope_theta: 10000.0
+    max_seq_len: 2048
+    separate_pos_emb: true
+
+optimizer:
+  learning_rate: 0.0001
+  eps: 1.0e-07
+  clip_grad_norm: true
+  grad_max_norm: 0.2
+  warmup_step: 5000
+
+use_ddp: true
+ddp:
+  port: 8023
+  devices: null
+autoencoder_config_path: runs/autoencoder_v0.3.3_old_refactored/config.yaml
+autoencoder_ckpt_path:  runs/autoencoder_v0.3.3_old_refactored/checkpoint_300000.pth
+top_k_accuracies:
+- 1
+- 5
+- 10
+- 20
+- 40

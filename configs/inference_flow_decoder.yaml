@@ -1,0 +1,34 @@
+flow_decoder_config_path: /mnt/shared_data/users/kajik/runs/flow_decoder/flow_decoder_v1.0/config.yaml
+flow_decoder_checkpoint_path: /mnt/shared_data/users/kajik/runs/flow_decoder/flow_decoder_v1.0/checkpoint_1000000.pth
+
+# flow_decoder_config_path: /mnt/shared_data/users/kajik/projects/castle-ai-speech-synthesis/refactored_logs/flow_decoder_v0.0.9/config.yaml
+flow_decoder_torchscript_path:  /mnt/shared_data/users/artyom/projects/castle-ai-model-convert-factory/converted_models/mel_spec_flow_decoder/v2/mel_spec_flow_decoder_v2.pt
+
+autoencoder_config_path: /mnt/shared_data/users/kajik/runs/autoencoder/autoencoder_v1.0/config.yaml
+autoencoder_checkpoint_path: /mnt/shared_data/users/kajik/runs/autoencoder/autoencoder_v1.0/checkpoint_300000.pth
+
+enable_fp16: true
+device: cuda
+seed: 42
+vocoder_path: /mnt/shared_data/users/mariam/ckpts/bigvgan_22khz_80band/zero-shot-models_vocoder_1_vocoder_model.pt
+
+inference_hparams:
+  n_steps: 16
+  alpha: 0.7
+  sigma: 1.0
+  chunk_size: 3.
+  cut_random_chunk: false
+  cut_left_chunk: false
+  cut_right_chunk: true
+
+
+# airflow related
+inference_type: flow_decoder
+dataset_name: librispeech_test_clean_small
+save_features:
+  spectrogram: false
+  audio: true
+  prompt_audio_processed: true
+  prompt_audio_vocoded: true
+
+inference_relpath: castle_flow/flow_decoder/inference.py
